@@ -18,6 +18,34 @@ This project delivers a full-stack business intelligence solution that provides 
 
 ## 🏗️ Architecture
 
+### High-Level Architecture
+
+```mermaid
+graph TB
+    A[Data Sources] --> B[Data Pipeline Layer]
+    B --> C[Data Processing Engine]
+    C --> D[Real-time Database]
+    D --> E[API Gateway]
+    E --> F[Backend Services]
+    F --> G[Power BI Integration]
+    F --> H[WebSocket Server]
+    H --> I[React Frontend]
+    G --> I
+    
+    subgraph "Data Sources"
+        A1[E-commerce Database]
+        A2[Payment Gateway APIs]
+        A3[Inventory Management]
+        A4[Customer Service Systems]
+    end
+    
+    subgraph "Processing Layer"
+        C1[ETL Pipeline]
+        C2[Real-time Stream Processing]
+        C3[DAX Calculation Engine]
+    end
+```
+
 ### Technology Stack
 
 **Frontend:**
