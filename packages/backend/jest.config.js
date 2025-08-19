@@ -15,4 +15,10 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  testEnvironment: 'node',
+  globals: {
+    'process.env': {
+      NODE_ENV: 'test'
+    }
+  }
 };
