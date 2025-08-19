@@ -72,7 +72,7 @@ export const createKafkaClient = (): Kafka => {
     clientId: config.clientId,
     brokers: config.brokers,
     ssl: config.ssl,
-    sasl: config.sasl,
+    sasl: config.sasl as any, // Type assertion for SASL config
     connectionTimeout: config.connectionTimeout,
     requestTimeout: config.requestTimeout,
     retry: config.retry,

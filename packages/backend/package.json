@@ -12,7 +12,9 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "migrate": "node scripts/migrate.js",
-    "migrate:rollback": "node scripts/rollback.js"
+    "migrate:rollback": "node scripts/rollback.js",
+    "demo": "ts-node src/demo/run-demo.ts",
+    "demo-server": "ts-node src/simple-demo-server.ts"
   },
   "dependencies": {
     "@ecommerce-bi/shared": "file:../shared",

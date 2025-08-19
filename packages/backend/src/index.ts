@@ -7,6 +7,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
+import demoRoutes from './routes/demo.routes';
 import { testDatabaseConnection, getDatabaseHealth } from './config/database';
 import { DatabaseHealthService } from './services/database-health.service';
 import { syncDatabase } from './models';
@@ -22,6 +23,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 // Request ID middleware for tracking
 app.use((req, res, next) => {
@@ -32,6 +34,12 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/demo', demoRoutes);
+
+// Root route - redirect to demo
+app.get('/', (req, res) => {
+  res.redirect('/demo.html');
+});
 
 // Health check endpoint
 app.get('/health', async (req, res) => {
@@ -104,26 +112,26 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
 // Initialize database and start server
 const initializeApp = async () => {
   try {
-    // Test database connection
+    // Test database connection (optional for demo)
     const isConnected = await testDatabaseConnection();
-    if (!isConnected) {
-      console.error('Failed to connect to database. Exiting...');
-      process.exit(1);
-    }
-
-    // Sync database models (create tables if they don't exist)
-    if (process.env.NODE_ENV !== 'production') {
-      await syncDatabase({ alter: true });
+    if (isConnected) {
+      console.log('✅ Database connected successfully');
+      
+      // Sync database models (create tables if they don't exist)
+      if (process.env.NODE_ENV !== 'production') {
+        await syncDatabase({ alter: true });
+      }
+    } else {
+      console.log('⚠️  Database not available - running in demo mode');
     }
 
     // Start database health monitoring
     const healthService = DatabaseHealthService.getInstance();
     healthService.startHealthChecks(30000); // Check every 30 seconds
 
-    console.log('Database initialized successfully');
+    console.log('🚀 Server initialization completed');
   } catch (error) {
-    console.error('Failed to initialize database:', error);
-    process.exit(1);
+    console.warn('Database initialization failed, continuing in demo mode:', error instanceof Error ? error.message : 'Unknown error');
   }
 };
 

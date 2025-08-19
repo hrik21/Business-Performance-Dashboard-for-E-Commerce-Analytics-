@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce BI Data Pipeline Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .demo-section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .demo-button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        .demo-button:hover {
+            background: #45a049;
+        }
+        .demo-button.secondary {
+            background: #2196F3;
+        }
+        .demo-button.secondary:hover {
+            background: #1976D2;
+        }
+        .result-container {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result-container pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .input-section {
+            margin: 15px 0;
+        }
+        .input-section textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid #4CAF50;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 E-commerce BI Data Pipeline Demo</h1>
+        <p>Interactive demonstration of the data pipeline foundation capabilities</p>
+    </div>
+
+    <div class="demo-section">
+        <h2>📊 System Overview</h2>
+        <p>Get an overview of the system capabilities and components.</p>
+        <button class="demo-button" onclick="fetchOverview()">Get System Overview</button>
+        <div id="overview-result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🏥 System Health</h2>
+        <p>Check the health status of all system components including database and Kafka.</p>
+        <button class="demo-button" onclick="fetchHealth()">Check System Health</button>
+        <div id="health-result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>✅ Data Validation Demo</h2>
+        <p>Test the data validation and cleansing capabilities with sample data.</p>
+        <div class="input-section">
+            <label>Sample Data (JSON):</label>
+            <textarea id="validation-data">[
+  {"name": "John Doe", "email": "john@example.com", "age": 30, "revenue": 1500},
+  {"name": "", "email": "invalid-email", "age": -5, "revenue": null},
+  {"name": "Jane Smith", "email": "JANE@EXAMPLE.COM", "age": 25, "revenue": 2000}
+]</textarea>
+        </div>
+        <button class="demo-button" onclick="validateData()">Validate Data</button>
+        <div id="validation-result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🌊 Stream Processing Simulation</h2>
+        <p>Simulate real-time stream processing with message transformation.</p>
+        <div class="input-section">
+            <label>Messages (JSON):</label>
+            <textarea id="stream-data">[
+  {"key": "order-1", "value": {"customerId": "C001", "amount": 150.00, "product": "Widget A"}},
+  {"key": "order-2", "value": {"customerId": "C002", "amount": 200.50, "product": "Widget B"}},
+  {"key": "order-3", "value": {"customerId": "C003", "amount": 75.25, "product": "Widget C"}}
+]</textarea>
+        </div>
+        <button class="demo-button" onclick="simulateStream()">Simulate Stream Processing</button>
+        <div id="stream-result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>📈 Data Quality Report</h2>
+        <p>View real-time data quality metrics and recommendations.</p>
+        <button class="demo-button" onclick="fetchQualityReport()">Get Quality Report</button>
+        <div id="quality-result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🎬 Complete Demo</h2>
+        <p>Run the complete demonstration of all system capabilities.</p>
+        <button class="demo-button secondary" onclick="runFullDemo()">Run Complete Demo</button>
+        <div id="full-demo-result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/demo';
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                return await response.json();
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function showResult(elementId, data, loading = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            
+            if (loading) {
+                element.innerHTML = '<div class="loading">Loading...</div>';
+                return;
+            }
+
+            if (data.success) {
+                element.innerHTML = `
+                    <div class="success">✅ Request successful</div>
+                    <pre>${JSON.stringify(data.data, null, 2)}</pre>
+                `;
+            } else {
+                element.innerHTML = `
+                    <div class="error">❌ Error: ${data.error}</div>
+                `;
+            }
+        }
+
+        async function fetchOverview() {
+            showResult('overview-result', null, true);
+            const result = await makeRequest(`${API_BASE}/overview`);
+            showResult('overview-result', result);
+        }
+
+        async function fetchHealth() {
+            showResult('health-result', null, true);
+            const result = await makeRequest(`${API_BASE}/health`);
+            showResult('health-result', result);
+        }
+
+        async function validateData() {
+            showResult('validation-result', null, true);
+            try {
+                const data = JSON.parse(document.getElementById('validation-data').value);
+                const result = await makeRequest(`${API_BASE}/validate-data`, {
+                    method: 'POST',
+                    body: JSON.stringify({ data })
+                });
+                showResult('validation-result', result);
+            } catch (error) {
+                showResult('validation-result', { success: false, error: 'Invalid JSON data' });
+            }
+        }
+
+        async function simulateStream() {
+            showResult('stream-result', null, true);
+            try {
+                const messages = JSON.parse(document.getElementById('stream-data').value);
+                const result = await makeRequest(`${API_BASE}/simulate-stream`, {
+                    method: 'POST',
+                    body: JSON.stringify({ messages })
+                });
+                showResult('stream-result', result);
+            } catch (error) {
+                showResult('stream-result', { success: false, error: 'Invalid JSON data' });
+            }
+        }
+
+        async function fetchQualityReport() {
+            showResult('quality-result', null, true);
+            const result = await makeRequest(`${API_BASE}/quality-report`);
+            showResult('quality-result', result);
+        }
+
+        async function runFullDemo() {
+            showResult('full-demo-result', null, true);
+            const result = await makeRequest(`${API_BASE}/run-full-demo`);
+            showResult('full-demo-result', result);
+        }
+
+        // Auto-load overview on page load
+        window.addEventListener('load', fetchOverview);
+    </script>
+</body>
+</html>
